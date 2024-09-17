@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<odoo>
+    <record id="mrp_production_form_view_hx" model="ir.ui.view">
+        <field name="name">mrp.production.view.form.hx_cancel_mrp_production</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_cancel_mrp_production"
+                        groups="hx_cancel_mrp_production.hx_group_cancel_mrp_production"
+                        attrs="{'invisible': [('state','!=','done')]}"
+                        type="object"
+                        string="Cancel"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_cancel_mrp_production" model="ir.actions.server">
+        <field name="name">Cancel Manufacturing Order</field>
+        <field name="model_id" ref="mrp.model_mrp_production"/>
+        <field name="binding_model_id" ref="mrp.model_mrp_production"/>
+        <field name="binding_view_types">list</field>
+         <field name="groups_id" eval="[(4, ref('hx_cancel_mrp_production.hx_group_cancel_mrp_production'))]"/>
+        <field name="state">code</field>
+        <field name="code">
+for production in records:
+    production.action_cancel_mrp_production()
+
+done_mrp_production = records.filtered(lambda mp: mp.state != 'done')
+raise UserError("This action is only allowed for orders in the 'Done' state.")
+        </field>
+    </record>
+</odoo>
