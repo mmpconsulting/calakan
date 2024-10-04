@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+<template id="reportnya">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-set="o" t-value="o.sudo()" />
+            <div class="page" style="font-family: Poppins;">
+                <head>
+                    <meta charset="UTF-8"/>
+                </head>
+                <style>
+                    tr {
+                        border: 1px solid black;
+                        padding: 5px;
+                    }
+                    th {
+                        border: 1px solid black;
+                        padding: 5px;
+                    }
+                    td {
+                        border: 1px solid black;
+                        padding: 5px;
+                    }
+                </style>
+                <div class="box" style="color: white; background-color: white;width:200%;">a</div>
+                <table width="100%" style="border-collapse: collapse; border: 1px solid black;">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">KONSUMEN</th>
+                            <th rowspan="2">NOMOR PESANAN</th>
+                            <th rowspan="2">DETAIL PRODUK</th>
+                            <th rowspan="2">PEMBELIAN</th>
+                            <th rowspan="2">PENGIRIMAN</th>
+                            <th colspan="4">MANUFACTURE FINISHING</th>
+                            <th colspan="4">PENGOLAHAN</th>
+                            <th colspan="3">BAHAN BAKU</th>
+                        </tr>
+                        <tr>
+                            <th>PROSES</th>
+                            <th>PRODUK OUTPUT</th>
+                            <th>OUTPUT</th>
+                            <th>DURASI</th>
+                            <th>PROSES</th>
+                            <th>PRODUK OUTPUT</th>
+                            <th>OUTPUT</th>
+                            <th>DURASI</th>
+                            <th>PROSES</th>
+                            <th>PRODUK OUTPUT</th>
+                            <th>OUTPUT</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><t t-esc="o.partner_id.name"/></td>
+                            <td><t t-esc="o.name"/></td>
+                            <td>
+                                <t t-foreach="o.order_line" t-as="line">
+                                    <t t-esc="line.product_id.name"/><br/>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-if="o.get_related_purchase_orders()">
+                                    <t t-foreach="o.get_related_purchase_orders()" t-as="po">
+                                        <t t-esc="po.name"/><br/>
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    -
+                                </t>
+                            </td>
+                            <td>
+                                <t t-esc="o.picking_ids.name"/>
+                            </td>
+                            <!-- PARENT MRP -->
+                            <td>
+                                <t t-foreach="o.mrp_production_ids" t-as="mrp">
+                                    <t t-esc="mrp.name"/><br/>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-foreach="o.mrp_production_ids" t-as="mrp">
+                                    <t t-esc="mrp.product_id.name"/><br/>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-foreach="o.mrp_production_ids" t-as="mrp">
+                                    <t t-esc="'{:0,}'.format(int(mrp.product_qty)).replace(',', '.')"/> <br/>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-foreach="o.mrp_production_ids" t-as="mrp">
+                                    <t t-esc="'{:0,}'.format(int(mrp.workorder_ids.duration)).replace(',', '.')"/> <br/>
+                                </t>
+                            </td>
+                            
+                            <td>
+                                <t t-foreach="o.mrp_production_ids" t-as="mrp">
+                                    <t t-foreach="mrp.child_mrp_production_ids" t-as="child">
+                                        <t t-esc="child.name"/><br/>
+                                    </t>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-foreach="o.mrp_production_ids" t-as="mrp">
+                                    <t t-foreach="mrp.child_mrp_production_ids" t-as="child">
+                                        <t t-esc="child.product_id.name"/><br/>
+                                    </t>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-foreach="o.mrp_production_ids" t-as="mrp">
+                                    <t t-foreach="mrp.child_mrp_production_ids" t-as="child">
+                                        <t t-esc="'{:0,}'.format(int(child.product_qty)).replace(',', '.')"/> <br/>
+                                    </t>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-foreach="o.mrp_production_ids" t-as="mrp">
+                                    <t t-foreach="mrp.child_mrp_production_ids" t-as="child">
+                                        <t t-esc="'{:0,}'.format(int(child.workorder_ids.duration)).replace(',', '.')"/> <br/>
+                                    </t>
+                                </t>
+                            </td>
+                            
+
+                            <td>
+                                <t t-foreach="o.mrp_production_ids" t-as="mrp">
+                                    <t t-foreach="mrp.child_mrp_production_ids" t-as="child">
+                                        <t t-foreach="child.move_more_child_ids" t-as="move">
+                                            <t t-esc="move.name"/><br/>
+                                        </t>
+                                    </t>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-foreach="o.mrp_production_ids" t-as="mrp">
+                                    <t t-foreach="mrp.child_mrp_production_ids" t-as="child">
+                                        <t t-foreach="child.move_more_child_ids" t-as="move">
+                                            <t t-esc="move.product_id.name"/><br/>
+                                        </t>
+                                    </t>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-foreach="o.mrp_production_ids" t-as="mrp">
+                                    <t t-foreach="mrp.child_mrp_production_ids" t-as="child">
+                                        <t t-foreach="child.move_more_child_ids" t-as="move">
+                                            <t t-esc="'{:0,}'.format(int(move.product_qty)).replace(',', '.')"/><br/>
+                                        </t>
+                                    </t>
+                                </t>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </t>
+</template>
+</odoo>
